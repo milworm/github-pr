@@ -1,7 +1,7 @@
 # github-pr
 CLI tool to create github PR
 
-![Demo](https://raw.githubusercontent.com/milworm/github-pr/master/images/example.png)
+![Demo](https://raw.githubusercontent.com/milworm/github-pr/master/example.png)
 
 
 # Installation
