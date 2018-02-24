@@ -51,12 +51,12 @@ async function createPr () {
 		let { head, base, title } = await inquirer.prompt([
 			{
 				type: 'input',
-				message: msg('base branch', 'base', config),
+				message: msg('base branch (The branch where your changes are implemented)', 'base', config),
 				name: 'base'
 			},
 			{
 				type: 'input',
-				message: msg('head branch', 'head', config),
+				message: msg('head branch (The branch you want your changes pulled into)', 'head', config),
 				name: 'head'
 			},
 			{
