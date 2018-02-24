@@ -95,7 +95,7 @@ async function init () {
 	try {
 		let { token, owner, repo } = await inquirer.prompt([
 			{
-				type: 'input',
+				type: 'password',
 				message: 'github access token',
 				name: 'token'
 			},
