@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const octokit = require('@octokit/rest')()
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
