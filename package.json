@@ -20,5 +20,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/milworm/github-pr.git"
-  }
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "index.js"
+  ]
 }

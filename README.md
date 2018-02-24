@@ -1,6 +1,9 @@
 # github-pr
 CLI tool to create github PR
 
+![Demo](https://raw.githubusercontent.com/milworm/github-pr/master/images/example.png)
+
+
 # Installation
 ```bash
 npm i github-pr --save-dev
