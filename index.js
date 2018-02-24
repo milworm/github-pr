@@ -40,7 +40,6 @@ async function writeConfig (config) {
 	}
 }
 
-
 async function createPr () {
 	try {
 		let config = await readConfig()
