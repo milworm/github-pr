@@ -115,7 +115,6 @@ async function init () {
 	} catch (ex) {
 		console.warn(ex)
 	}
-
 }
 
 if (program.init) {
