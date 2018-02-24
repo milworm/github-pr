@@ -7,7 +7,7 @@ const CONFIG_FILE = path.join(__dirname, './github-pr.json')
  
 program
   .version('0.1.0')
-  .option('--token [token]', 'initialize github access token')
+  .option('--init [token] [owner] [repo]', 'initialize github access token, repository owner and name')
   .parse(process.argv)
 
 function msg(message, key, config) {
@@ -72,8 +72,8 @@ async function createPr () {
 		})
 
 		let result = await octokit.pullRequests.create({
-			owner: 'Didacti',
-			repo: 'mainline',
+			owner: config.owner,
+			repo: config.repo,
 			head: head || config.head,
 			base: base || config.base,
 			title
@@ -88,12 +88,12 @@ async function createPr () {
 	}
 }
 
-async function initToken (token) {
-	await writeConfig({ token })
+async function init (token, owner, repo) {
+	await writeConfig({ token, owner, repo })
 }
 
-if (program.token) {
-	initToken(program.token)
+if (program.init) {
+	init(program.token, program.owner, program.repo)
 } else {
 	createPr()
 }
