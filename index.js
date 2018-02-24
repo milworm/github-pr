@@ -34,7 +34,6 @@ async function readConfig () {
 
 async function writeConfig (config) {
 	try {
-		console.log(CONFIG_FILE, config)
 		await fs.writeJson(CONFIG_FILE, config)
 	} catch (ex) {
 		console.warn(ex)
