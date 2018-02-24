@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+const { exec } = require('child_process')
 const octokit = require('@octokit/rest')()
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
@@ -39,7 +39,6 @@ async function writeConfig (config) {
 		console.warn(ex)
 	}
 }
-
 
 async function createPr () {
 	try {
@@ -91,8 +90,35 @@ async function createPr () {
 	}
 }
 
+async function asyncExec (command) {
+	return new Promise((resolve, reject) => {
+		exec(command, (error, stdout) => {
+			if (error)
+				reject(error)
+			else
+				resolve(stdout)
+		})
+	})
+}
+
 async function init () {
 	try {
+		let result = await asyncExec('git config --get remote.origin.url')
+		let gitRepo = ''
+		let gitOwner
+
+		if (result.startsWith('http')) {
+			result = result.split('/').reverse()
+			gitOwner = result[1]
+			gitRepo = result[0]
+		} else {
+			result = result.split(':')[1].split('/')
+			gitOwner = result[0]
+			gitRepo = result[1]
+		}
+
+		gitRepo = gitRepo.split('.git')[0]
+
 		let { token, owner, repo } = await inquirer.prompt([
 			{
 				type: 'password',
@@ -101,17 +127,21 @@ async function init () {
 			},
 			{
 				type: 'input',
-				message: 'repository owner',
+				message: `repository owner, default: ${gitOwner}`,
 				name: 'owner'
 			},
 			{
 				type: 'input',
-				message: 'repository name',
+				message: `repository name, default: ${gitRepo}`,
 				name: 'repo'
 			}
 		])
 
-		await writeConfig(Object.assign({ token, owner, repo }))
+		await writeConfig({
+			token,
+			owner: owner || gitOwner,
+			repo: repo || gitRepo
+		})
 	} catch (ex) {
 		console.warn(ex)
 	}
