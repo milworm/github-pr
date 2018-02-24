@@ -9,12 +9,13 @@ const CONFIG_FILE = path.join(__dirname, './github-pr.json')
  
 program
   .version('0.1.0')
-  .option('--init [token] [owner] [repo]', 'initialize github access token, repository owner and name')
+  .option('--init', 'initialize github access token, repository owner and name')
+  .option('--pr', 'creates PR')
   .parse(process.argv)
 
 function msg(message, key, config) {
 	if (config[key])
-		message = `${message} (default: ${config[key]})`
+		message = `${message} Default: ${config[key]}`
 
 	return message
 }
@@ -33,6 +34,7 @@ async function readConfig () {
 
 async function writeConfig (config) {
 	try {
+		console.log(CONFIG_FILE, config)
 		await fs.writeJson(CONFIG_FILE, config)
 	} catch (ex) {
 		console.warn(ex)
@@ -58,7 +60,7 @@ async function createPr () {
 			},
 			{
 				type: 'input',
-				message: msg('head branch(The branch where your changes are implemented)', 'head', config),
+				message: msg('head branch (The branch where your changes are implemented)', 'head', config),
 				name: 'head'
 			},
 			{
@@ -90,12 +92,35 @@ async function createPr () {
 	}
 }
 
-async function init (token, owner, repo) {
-	await writeConfig({ token, owner, repo })
+async function init () {
+	try {
+		let { token, owner, repo } = await inquirer.prompt([
+			{
+				type: 'input',
+				message: 'github access token',
+				name: 'token'
+			},
+			{
+				type: 'input',
+				message: 'repository owner',
+				name: 'owner'
+			},
+			{
+				type: 'input',
+				message: 'repository name',
+				name: 'repo'
+			}
+		])
+
+		await writeConfig(Object.assign({ token, owner, repo }))
+	} catch (ex) {
+		console.warn(ex)
+	}
+
 }
 
 if (program.init) {
-	init(program.token, program.owner, program.repo)
+	init()
 } else {
 	createPr()
 }
