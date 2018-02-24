@@ -5,8 +5,8 @@ const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const path = require('path')
 const program = require('commander')
-const CONFIG_FILE = path.join(__dirname, './github-pr.json')
- 
+const CONFIG_FILE = path.join(process.cwd(), './github-pr.json')
+
 program
   .version('0.1.0')
   .option('--init', 'initialize github access token, repository owner and name')
@@ -79,7 +79,7 @@ async function createPr () {
 			head: head || config.head,
 			base: base || config.base,
 			title
-		})		
+		})
 
 		console.log(result.meta.status)
 		console.log(result.data.url)
