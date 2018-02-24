@@ -2,8 +2,13 @@ const octokit = require('@octokit/rest')()
 const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const path = require('path')
-
+const program = require('commander')
 const CONFIG_FILE = path.join(__dirname, './github-pr.json')
+ 
+program
+  .version('0.1.0')
+  .option('--token [token]', 'initialize github access token')
+  .parse(process.argv)
 
 function msg(message, key, config) {
 	if (config[key])
@@ -33,9 +38,16 @@ async function writeConfig (config) {
 }
 
 
-async function start () {
+async function createPr () {
 	try {
 		let config = await readConfig()
+
+		if (!config.token) {
+			console.warn('Github access token is not initialized')
+
+			return
+		}
+
 		let { head, base, title } = await inquirer.prompt([
 			{
 				type: 'input',
@@ -56,7 +68,7 @@ async function start () {
 
 		octokit.authenticate({
 		  type: 'token',
-		  token: ''
+		  token: config.token
 		})
 
 		let result = await octokit.pullRequests.create({
@@ -70,10 +82,18 @@ async function start () {
 		console.log(result.meta.status)
 		console.log(result.data.url)
 
-		await writeConfig({ head, base })
+		await writeConfig(Object.assign(config, { head, base }))
 	} catch (ex) {
 		console.warn(ex)
 	}
 }
 
-start()
+async function initToken (token) {
+	await writeConfig({ token })
+}
+
+if (program.token) {
+	initToken(program.token)
+} else {
+	createPr()
+}
